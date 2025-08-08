@@ -8,7 +8,7 @@ import { classes } from "@utils/misc";
 import { ModalContent, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { Message } from "@vencord/discord-types";
-import { findByPropsLazy, findComponentByCodeLazy } from "@webpack";
+import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
 import { Constants, Menu, MessageStore, React, RestAPI, ScrollerThin } from "@webpack/common";
 import { ComponentType } from "react";
 
@@ -28,6 +28,7 @@ type MessageComponentProps = {
     renderContentOnly: boolean;
 };
 const MessageComponent: ComponentType<MessageComponentProps> = findComponentByCodeLazy(/message:{id:\i}/);
+const populateMessagePrototype = findByCodeLazy(/PREMIUM_REFERRAL\?\(\i=\i.default.isProbablyAValidSnowflake\(/);
 
 const chatClasses = findByPropsLazy("messagesWrapper", "scrollerContent", "scrollerInner");
 const contentClass = findByPropsLazy("content");
@@ -155,8 +156,9 @@ export default definePlugin({
                                    messages = messages.reverse().map(message => {
                                        const cloneMessage = deepClone(message);
                                        delete cloneMessage.messageReference;
+                                       cloneMessage.author.hasFlag = () => false; // FIXME: this is a very hacky fix, I need to find how to populate the prototype of the user object
                                        return cloneMessage;
-                                   }).filter(message => !message.author.bot); // FIXME: bots crash the modal, so we filter them out for now
+                                   });
 
                                    openModal(modalProps => {
                                        return (
