@@ -156,7 +156,7 @@ export default definePlugin({
                                        const cloneMessage = deepClone(message);
                                        delete cloneMessage.messageReference;
                                        return cloneMessage;
-                                   });
+                                   }).filter(message => !message.author.bot); // FIXME: bots crash the modal, so we filter them out for now
 
                                    openModal(modalProps => {
                                        return (
@@ -190,26 +190,6 @@ export default definePlugin({
                                                            ))}
                                                        </ol>
                                                    </ScrollerThin>
-                                                   {/* <ol className={chatClasses.scrollerInner} style={{
-                                                       padding: "32px",
-                                                       display: "flex",
-                                                       flexDirection: "column",
-                                                       gap: "8px"
-                                                   }}>
-                                                       {messages.map(message => (
-                                                           <MessageComponent
-                                                               key={message.id}
-                                                               compact={false}
-                                                               channel={props.channel}
-                                                               message={message}
-                                                               groupId={message.id}
-                                                               id={`chat-messages-${props.channel.id}-${message.id}`}
-                                                               isLastItem={message.id === messages[messages.length - 1].id}
-                                                               renderContentOnly={false}
-                                                               flashKey={undefined}
-                                                           />
-                                                       ))}
-                                                   </ol>*/}
                                                </ModalContent>
                                            </ModalRoot>
                                        );
