@@ -8,7 +8,7 @@ import { classes } from "@utils/misc";
 import { ModalContent, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin from "@utils/types";
 import { Message } from "@vencord/discord-types";
-import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy } from "@webpack";
+import { findByCodeLazy, findByPropsLazy, findComponentByCodeLazy, fluxStores } from "@webpack";
 import { Constants, Menu, MessageStore, React, RestAPI, ScrollerThin } from "@webpack/common";
 import { ComponentType } from "react";
 
@@ -157,6 +157,7 @@ export default definePlugin({
                                        const cloneMessage = deepClone(message);
                                        delete cloneMessage.messageReference;
                                        cloneMessage.author.hasFlag = () => false; // FIXME: this is a very hacky fix, I need to find how to populate the prototype of the user object
+                                       if(props.channel?.guild_id) fluxStores.GuildMemberRequesterStore.requestMember(props.channel?.guild_id, cloneMessage.author.id);
                                        return cloneMessage;
                                    });
 
